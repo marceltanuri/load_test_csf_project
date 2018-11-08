@@ -12,7 +12,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class TestConnection {
 	
-	 final Logger LOGGER = Logger.getLogger(TestConnection.class.getName());
+	 private static final int TIMEOUT = 5000;
+	final Logger LOGGER = Logger.getLogger(TestConnection.class.getName());
 
 	public void test() {
 		long beginTime = System.currentTimeMillis();
@@ -24,12 +25,12 @@ public class TestConnection {
 			con.setDoInput(true);
 			con.setDoOutput(true);
 			con.setAllowUserInteraction(false);
-			con.setConnectTimeout(5000);
+			con.setConnectTimeout(TIMEOUT);
 
 			con.setRequestProperty("Request-Method", "POST");
 
-			String secretKey = "teste";
-			String idRobot = "teste";
+			String secretKey = "teste"+System.currentTimeMillis();
+			String idRobot = "teste"+System.currentTimeMillis();
 
 			String postParams = "secret=" + secretKey + "&response=" + idRobot;
 
@@ -46,9 +47,16 @@ public class TestConnection {
 				response.append(inputLine);
 			}
 			in.close();
-			LOGGER.info("test ok");
+			long endTime = System.currentTimeMillis();
+			LOGGER.info("connected in " + (endTime - beginTime) + " millisecounds");
 
-		} catch (Exception ex) {
+		} 
+		
+		catch(java.net.SocketTimeoutException tmex) {
+			LOGGER.severe(TIMEOUT + " millisecounds timeout exceded!");
+		}
+		
+		catch (Exception ex) {
 			LOGGER.severe(ex.getMessage());
 			ex.printStackTrace();
 		}
@@ -57,5 +65,4 @@ public class TestConnection {
 			LoadingTimeCounter.addLoadTime(endTime - beginTime);
 		}
 	}
-
 }

@@ -5,5 +5,4 @@ public class TestConnectionRunner implements Runnable {
 	public void run() {
 		new TestConnection().test();
 	}
-
 }
